@@ -1,30 +1,24 @@
 <template>
   <section>
     <div class="d-flex flex-row justify-content-around">
-      <button class="btn btn-primary mb-2" @click="addFeedLeft">tétée gauche</button>
-      <button class="btn btn-primary mb-2" @click="addFeedRight">tétée droite</button>
+      <button class="btn btn-outline-warning mb-2" @click="addFeed(e = 'left')">tétée gauche</button>
+      <button class="btn btn-outline-success mb-2" @click="addFeed(e = 'right')">tétée droite</button>
     </div>
     <div class="container">
       <div class="row">
 
-         <div class="col">
-          <div v-for="(feedLeft, index) in feedsLeft" :key="index">
-            <div class="list-group-item list-group-item-success text-primary">{{feedLeft}}
-              <button class="btn btn-outline-danger" @click="removeFeedLeft(index)"><i
-                  class="fa-solid fa-trash-can cursor-pointer"></i></button>
+        <div class="col">
+          <div v-for="(feed, index) in feeds" :key="index">
+            <div class="list-group-item list-group-item-success text-primary mb-1" :class="feed.side=='left'?'left':'right'">{{feed.date}}
+              <small><button class="btn btn-outline-danger " @click="removeFeed(index)">
+                <i class="fa-solid fa-trash-can cursor-pointer"></i>
+              </button></small>
             </div>
           </div>
         </div>
-        <div class="col ">
-          <div  v-for="(feedRight, index) in feedsRight" :key="index">
-            <div class="list-group-item list-group-item-primary text-primary">{{feedRight}}
-              <button class="btn btn-outline-danger" @click="removeFeedRight(index)"><i
-                  class="fa-solid fa-trash-can cursor-pointer"></i></button>
-            </div>
-          </div>
-        </div>
-       
-       
+
+
+
       </div>
     </div>
   </section>
@@ -36,53 +30,36 @@
 
     data() {
       return {
-        feedsRight: [],
-        feedsLeft: []
+        feeds: [],
       }
     },
     methods: {
       setFeeds() {
-        this.feedsRight = JSON.parse(localStorage.getItem("feedsRight")) || [];
-        this.feedsLeft = JSON.parse(localStorage.getItem("feedsLeft")) || [];
+        this.feeds = JSON.parse(localStorage.getItem("feeds")) || [];
       },
-      addFeedLeft() {
-        this.feedsLeft.unshift(new Date().toLocaleTimeString([], {
-          weekday: 'long', month: 'long', day: 'numeric'
-        }));
+      addFeed(e) {
+        
+        let newFeed = {
+          date: new Date().toLocaleTimeString([], { weekday: 'long', month: 'long', day: 'numeric' }),
+          side: e
+        }
+        this.feeds.unshift(newFeed);
+
         localStorage.setItem(
-          "feedsLeft",
-          JSON.stringify(this.feedsLeft
-          )
-        );
-      },
-      addFeedRight() {
-        this.feedsRight.unshift(new Date().toLocaleTimeString([], {
-          weekday: 'long', month: 'long', day: 'numeric'
-        }));
-        localStorage.setItem(
-          "feedsRight",
-          JSON.stringify(this.feedsRight
+          "feeds",
+          JSON.stringify(this.feeds
           )
         );
       },
 
-      removeFeedLeft(feed) {
-        this.feedsLeft.splice(feed, 1)
+      removeFeed(feedIndex) {
+        this.feeds.splice(feedIndex, 1)
         localStorage.setItem(
-          "feedsLeft",
-          JSON.stringify(this.feedsLeft
+          "feeds",
+          JSON.stringify(this.feeds
           )
         );
       },
-      removeFeedRight(feed) {
-        this.feedsRight.splice(feed, 1)
-        localStorage.setItem(
-          "feedsRight",
-          JSON.stringify(this.feedsLeft
-          )
-        );
-      },
-
 
     },
     mounted() {
@@ -90,3 +67,27 @@
     }
   }
 </script>
+<style>
+  .left:before{
+    content:'';
+    width:50%;
+    height:10%;
+    background-color: #ffc107!important;
+    position: absolute;
+    top: 0;
+    left:-1px;
+    border-bottom-right-radius:30px
+
+  }
+  .right:before{
+    content:'';
+    width:50%;
+    height:10%;
+    background-color: #198754!important;
+    position: absolute;
+    top: 0;
+    right:-1px;
+    border-bottom-left-radius:30px
+
+  }
+</style>
