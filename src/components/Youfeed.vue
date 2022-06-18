@@ -1,8 +1,8 @@
 <template>
   <section>
     <div class="d-flex flex-row justify-content-around py-3" >
-      <button class="btn btn-outline-warning mb-2" @click="addFeed(e = 'left')">tétée gauche</button>
-      <button class="btn btn-outline-success mb-2" @click="addFeed(e = 'right')">tétée droite</button>
+      <button class="btn btn-outline-warning mb-2" @click="addFeed(e = 'left')">left breast</button>
+      <button class="btn btn-outline-success mb-2" @click="addFeed(e = 'right')">right breast</button>
     </div>
 
     <div class="col">
@@ -11,7 +11,7 @@
           :class="feed.side=='left'?'left':'right'">
           <p>{{new Date(feed.date).toLocaleTimeString([], { weekday: 'long', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit' })}}</p>
           <span v-if="feed.gap" class="text-dark shadow-sm align-self-end feed-gap mb-1">+ {{ new Date(feed.gap).toISOString().slice(11, -8) }}</span>
-          <button class="btn btn-outline-danger ml-auto " @click="removeFeed(index)">
+          <button class="btn btn-outline-danger ml-auto remove-feed py-0 px-1" @click="removeFeed(index)">
             <i class="fa-solid fa-trash-can cursor-pointer"></i>
           </button>
         </div>
@@ -96,5 +96,8 @@
     border-top-left-radius: 5px;
     border-radius: 157px 55px / 168px;
     
+}
+.remove-feed{
+  font-size: 10px;
 }
 </style>
