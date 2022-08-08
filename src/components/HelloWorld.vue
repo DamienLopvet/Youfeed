@@ -1,58 +1,108 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
-  </div>
+  <section>
+    <div class="d-flex flex-row justify-content-around py-3">
+      <button class="btn btn-outline-warning mb-2" @click="addFeed(e = 'left')">left breast</button>
+      <button class="btn btn-outline-success mb-2" @click="addFeed(e = 'right')">right breast</button>
+    </div>
+
+    <div class="col">
+      <div v-for="(feed, index) in feeds" :key="index">
+        <div
+          class="pt-3 pb-0 list-group-item list-group-item-success text-primary mb-1 d-flex flex-row flex-wrap justify-content-between align-items-baseline"
+          :class="feed.side=='left'?'left':'right'">
+          <p>{{new Date(feed.date).toLocaleTimeString([], { weekday: 'long', month: 'long', day: 'numeric',hour:
+            '2-digit', minute: '2-digit' })}}</p>
+          <span v-if="feed.gap" class="text-dark shadow-sm align-self-end feed-gap mb-1">+ {{ new
+            Date(feed.gap).toISOString().slice(11, -8) }}</span>
+          <button class="btn btn-outline-danger ml-auto remove-feed py-0 px-1" @click="removeFeed(index)">
+          <img src="../assets/trash.png" alt="trashbin" width="15">
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
-    msg: String
+
+  data () {
+    return {
+      feeds: []
+    }
+  },
+  methods: {
+    setFeeds () {
+      this.feeds = JSON.parse(localStorage.getItem('feeds')) || []
+    },
+    addFeed (e) {
+      const lastFeed = this.feeds[0]?.date
+      const feedGap = Date.now() - parseInt(lastFeed)
+      const newFeed = {
+        date: Date.now(),
+        side: e,
+        gap: feedGap
+
+      }
+      this.feeds.unshift(newFeed)
+
+      localStorage.setItem(
+        'feeds',
+        JSON.stringify(this.feeds
+        )
+      )
+    },
+
+    removeFeed (feedIndex) {
+      this.feeds.splice(feedIndex, 1)
+      localStorage.setItem(
+        'feeds',
+        JSON.stringify(this.feeds
+        )
+      )
+    }
+
+  },
+
+  mounted () {
+    this.setFeeds()
   }
 }
 </script>
+<style>
+  .left:before {
+    content: '';
+    width: 50%;
+    height: 10%;
+    background-color: #ffc107 !important;
+    position: absolute;
+    top: 0;
+    left: -1px;
+    border-bottom-right-radius: 30px
+  }
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+  .right:before {
+    content: '';
+    width: 50%;
+    height: 10%;
+    background-color: #198754 !important;
+    position: absolute;
+    top: 0;
+    right: -1px;
+    border-bottom-left-radius: 30px
+  }
+
+  .feed-gap {
+    font-size: 9px;
+    border: 1px solid black;
+    padding: 0 5px;
+    border-top-left-radius: 5px;
+    border-radius: 157px 55px / 168px;
+
+  }
+
+  .remove-feed {
+    font-size: 10px;
+  }
 </style>
