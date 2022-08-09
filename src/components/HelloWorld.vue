@@ -7,18 +7,19 @@
 
     <div class="col">
       <div v-for="(feed, index) in feeds" :key="index">
-        <div
-          class="pt-3 pb-0 list-group-item list-group-item-success text-primary mb-1 d-flex flex-row flex-wrap justify-content-between align-items-baseline"
-          :class="feed.side=='left'?'left':'right'">
-          <p>{{new Date(feed.date).toLocaleTimeString([], { weekday: 'long', month: 'long', day: 'numeric',hour:
-            '2-digit', minute: '2-digit' })}}</p>
-          <span v-if="feed.gap" class="text-dark shadow-sm align-self-end feed-gap mb-1">+ {{ new
-            Date(feed.gap).toISOString().slice(11, -8) }}</span>
-          <button class="btn btn-outline-danger ml-auto remove-feed py-0 px-1" @click="removeFeed(index)">
-          <img src="../assets/trash.png" alt="trashbin" width="15">
-          </button>
+          <div
+            class="pt-3 pb-0 list-group-item list-group-item-success text-primary mb-1 d-flex flex-row flex-wrap justify-content-around align-items-baseline"
+            :class="feed.side=='left'?'left':'right'">
+            <p>{{new Date(feed.date).toLocaleTimeString([], { weekday: 'long', month: 'long', day: 'numeric',hour:
+              '2-digit', minute: '2-digit' })}}</p>
+            <span v-if="feed.gap" class="text-dark shadow-sm align-self-start feed-gap mt-1">+ {{ new
+              Date(feed.gap).toISOString().slice(11, -8) }}</span>
+            <span v-else class="emptydiv"> </span>
+            <button class="btn btn-outline-danger ml-auto remove-feed pb-1 pt-0 px-1" @click="removeFeed(index)">
+              <img src="../assets/trash.png" alt="trashbin" width="20">
+            </button>
+          </div>
         </div>
-      </div>
     </div>
   </section>
 </template>
@@ -94,7 +95,7 @@ export default {
   }
 
   .feed-gap {
-    font-size: 9px;
+    font-size: 12px;
     border: 1px solid black;
     padding: 0 5px;
     border-top-left-radius: 5px;
@@ -105,4 +106,9 @@ export default {
   .remove-feed {
     font-size: 10px;
   }
+
+  .emptydiv {
+    width: 60px;
+  }
+
 </style>
